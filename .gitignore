@@ -1,0 +1,17 @@
+_cjs
+_esm
+_types
+*.local
+.DS_Store
+.attest
+node_modules
+tsconfig*.tsbuildinfo
+.idea
+
+# local env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.envrc
