@@ -1,5 +1,5 @@
 {
-  "name": "hardhat-plugin-cive",
+  "name": "hardhat-cive",
   "version": "0.0.0",
   "type": "module",
   "description": "",
@@ -16,5 +16,8 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "cive": "^0.0.4"
+  }
 }
