@@ -13,10 +13,7 @@ declare module 'hardhat/types/runtime.js' {
       getWalletClients(
         config: getWalletClientsParameters,
       ): Promise<WalletClient[]>
-      getWalletClient(
-        address: Address,
-        config?: Partial<getWalletClientsParameters>,
-      ): Promise<WalletClient>
+      getWalletClient(config: getWalletClientsParameters): Promise<WalletClient>
     }
   }
 }

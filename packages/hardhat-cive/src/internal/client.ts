@@ -72,3 +72,14 @@ export async function innerGetWalletClients(
 
   return walletClients
 }
+
+export async function getWalletClient(
+  accounts: HardhatNetworkAccountsConfig | HttpNetworkAccountsConfig,
+  provider: EthereumProvider,
+  config: getWalletClientsParameters,
+): Promise<WalletClient> {
+  const civeAccounts = getAccountsByHreAccounts(accounts, config.chain!.id)
+
+  const pkAccounts = await innerGetWalletClients(provider, civeAccounts, config)
+  return pkAccounts[0]
+}
