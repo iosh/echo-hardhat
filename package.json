@@ -6,12 +6,18 @@
     "lint": "biome check --fix",
     "prepare": "husky"
   },
+  "lint-staged": {
+    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": "pnpm run lint && pnpm run format"
+  },
   "dependencies": {
     "typescript": "^5.5.4"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
     "@changesets/cli": "^2.27.7",
+    "@types/node": "^22.1.0",
+    "husky": "^9.1.4",
+    "lint-staged": "^15.2.8",
     "vitest": "^2.0.5"
   }
 }
