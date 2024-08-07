@@ -1,7 +1,21 @@
-import type { Chain, PublicClient, PublicClientConfig } from 'cive'
+import type {
+  Chain,
+  PublicClient,
+  PublicClientConfig,
+  WalletClientConfig,
+} from 'cive'
+import type {
+  HardhatNetworkAccountsConfig,
+  HttpNetworkAccountsConfig,
+} from 'hardhat/types/config.js'
 
+import type { PrivateKeyAccount } from 'cive/accounts'
 import type { EthereumProvider } from 'hardhat/types/provider.js'
-import type { getPublicClientParameters } from './type-extensions.js'
+import type { WalletClient } from 'viem'
+import { getAccountsByHreAccounts } from './accounts.js'
+
+export type getPublicClientParameters = Partial<PublicClientConfig> &
+  Required<Pick<PublicClientConfig, 'chain'>>
 
 export async function getPublicClient(
   provider: EthereumProvider,
@@ -27,4 +41,34 @@ export async function innerGetPublicClient(
   })
 
   return publicClient
+}
+
+export type getWalletClientsParameters = Partial<WalletClientConfig> &
+  Required<Pick<WalletClientConfig, 'chain'>>
+export async function getWalletClients(
+  accounts: HardhatNetworkAccountsConfig | HttpNetworkAccountsConfig,
+  provider: EthereumProvider,
+  config: getWalletClientsParameters,
+): Promise<WalletClient[]> {
+  const civeAccounts = getAccountsByHreAccounts(accounts, config.chain!.id)
+
+  return innerGetWalletClients(provider, civeAccounts, config)
+}
+
+export async function innerGetWalletClients(
+  provider: EthereumProvider,
+  accounts: PrivateKeyAccount[],
+  walletClientConfig: getWalletClientsParameters,
+) {
+  const cive = await import('cive')
+
+  const walletClients = accounts.map((account) => {
+    return cive.createWalletClient({
+      transport: cive.custom(provider),
+      account: account,
+      ...walletClientConfig,
+    })
+  })
+
+  return walletClients
 }

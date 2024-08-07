@@ -1,26 +1,21 @@
-import type {
-  Address,
-  PublicClient,
-  PublicClientConfig,
-  WalletClient,
-  WalletClientConfig,
-} from 'cive'
+import type { Address, PublicClient, WalletClient } from 'cive'
 
 import 'hardhat/types/runtime.js'
-
-export type getPublicClientParameters = Partial<PublicClientConfig> &
-  Required<Pick<PublicClientConfig, 'chain'>>
+import type {
+  getPublicClientParameters,
+  getWalletClientsParameters,
+} from './client.js'
 
 declare module 'hardhat/types/runtime.js' {
   interface HardhatRuntimeEnvironment {
     cive: {
       getPublicClient(config: getPublicClientParameters): Promise<PublicClient>
       getWalletClients(
-        config?: Partial<WalletClientConfig>,
-      ): Promise<[WalletClient, WalletClient]>
+        config: getWalletClientsParameters,
+      ): Promise<WalletClient[]>
       getWalletClient(
         address: Address,
-        config?: Partial<WalletClientConfig>,
+        config?: Partial<getWalletClientsParameters>,
       ): Promise<WalletClient>
     }
   }
