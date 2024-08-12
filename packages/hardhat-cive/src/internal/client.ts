@@ -1,9 +1,4 @@
-import type {
-  Chain,
-  PublicClient,
-  PublicClientConfig,
-  WalletClientConfig,
-} from 'cive'
+import type { Chain, PublicClientConfig, WalletClientConfig } from 'cive'
 import type {
   HardhatNetworkAccountsConfig,
   HttpNetworkAccountsConfig,
@@ -11,7 +6,7 @@ import type {
 
 import type { PrivateKeyAccount } from 'cive/accounts'
 import type { EthereumProvider } from 'hardhat/types/provider.js'
-import type { WalletClient } from 'viem'
+import type { PublicClient, WalletClient } from 'src/types.js'
 import { getAccountsByHreAccounts } from './accounts.js'
 
 export type getPublicClientParameters = Partial<PublicClientConfig> &
@@ -38,7 +33,7 @@ export async function innerGetPublicClient(
     chain: chain,
     transport: cive.custom(provider),
     ...publicClientConfig,
-  })
+  }) as PublicClient
 
   return publicClient
 }
@@ -67,7 +62,7 @@ export async function innerGetWalletClients(
       transport: cive.custom(provider),
       account: account,
       ...walletClientConfig,
-    })
+    }) as WalletClient
   })
 
   return walletClients
