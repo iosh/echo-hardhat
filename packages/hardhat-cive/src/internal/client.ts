@@ -5,21 +5,29 @@ import type {
 } from 'hardhat/types/config.js'
 
 import type { PrivateKeyAccount } from 'cive/accounts'
+import { HardhatPluginError } from 'hardhat/plugins.js'
 import type { EthereumProvider } from 'hardhat/types/provider.js'
+import type { HardhatRuntimeEnvironment } from 'hardhat/types/runtime.js'
 import type { PublicClient, WalletClient } from 'src/types.js'
 import { getAccountsByHreAccounts } from './accounts.js'
-
-export type getPublicClientParameters = Partial<PublicClientConfig> &
-  Required<Pick<PublicClientConfig, 'chain'>>
+import { getChain } from './chains.js'
 
 export async function getPublicClient(
-  provider: EthereumProvider,
-  config: getPublicClientParameters,
+  her: HardhatRuntimeEnvironment,
+  config: Partial<PublicClientConfig>,
 ) {
-  const chain = config.chain
+  const { network } = her
 
-  if (!chain) throw new Error('getPublicClient: chain is required')
-  return innerGetPublicClient(provider, chain, config)
+  if (!('url' in network.config)) {
+    throw new HardhatPluginError(
+      'hardhat-cive',
+      'hardhat-cive only support conflux mainnet testnet and private network, please use conflux network and set url in config file',
+    )
+  }
+
+  const chain = await getChain(network.provider, network.config)
+
+  return innerGetPublicClient(network.provider, chain, config)
 }
 
 export async function innerGetPublicClient(
@@ -38,14 +46,13 @@ export async function innerGetPublicClient(
   return publicClient
 }
 
-export type getWalletClientsParameters = Partial<WalletClientConfig> &
-  Required<Pick<WalletClientConfig, 'chain'>>
+export type getWalletClientsParameters = Partial<WalletClientConfig>
 export async function getWalletClients(
   accounts: HardhatNetworkAccountsConfig | HttpNetworkAccountsConfig,
   provider: EthereumProvider,
   config: getWalletClientsParameters,
 ): Promise<WalletClient[]> {
-  const civeAccounts = getAccountsByHreAccounts(accounts, config.chain!.id)
+  const civeAccounts = getAccountsByHreAccounts(accounts, config.chainId)
 
   return innerGetWalletClients(provider, civeAccounts, config)
 }
