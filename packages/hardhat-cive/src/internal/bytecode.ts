@@ -1,4 +1,4 @@
-import type { Address, Hex } from 'cive'
+import type { Hex } from 'cive'
 import type { Artifact } from 'hardhat/types/artifacts.js'
 import {
   AmbigousLibraryNameError,
@@ -18,7 +18,7 @@ export interface Link {
 
 async function throwOnAmbigousLibraryNameOrUnnecessaryLink(
   contractName: string,
-  libraries: Libraries<Address>,
+  libraries: Libraries<Hex>,
   neededLibraries: Link[],
 ) {
   for (const linkedLibraryName of Object.keys(libraries)) {
@@ -44,7 +44,7 @@ async function throwOnAmbigousLibraryNameOrUnnecessaryLink(
 }
 async function throwOnMissingLibrariesAddress(
   contractName: string,
-  libraries: Libraries<Address>,
+  libraries: Libraries<Hex>,
   neededLibraries: Link[],
 ) {
   const missingLibraries = []
@@ -63,7 +63,7 @@ async function throwOnMissingLibrariesAddress(
 }
 async function throwOnOverlappingLibraryNames(
   _contractName: string,
-  libraries: Libraries<Address>,
+  libraries: Libraries<Hex>,
   neededLibraries: Link[],
 ) {
   for (const { sourceName, libraryName } of neededLibraries) {
@@ -99,10 +99,9 @@ export async function linkBytecode(
 
 export async function resolveBytecodeWithLinkedLibraries(
   artifact: Artifact,
-  libraries: Libraries<Address>,
+  libraries: Libraries<Hex>,
 ): Promise<Hex> {
   const { linkReferences } = artifact
-
   const neededLibraries: Link[] = []
   for (const [sourceName, sourceLibraries] of Object.entries(linkReferences)) {
     for (const libraryName of Object.keys(sourceLibraries)) {
