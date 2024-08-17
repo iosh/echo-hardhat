@@ -1,3 +1,4 @@
+import type { Hex } from 'cive'
 import { type PrivateKeyAccount, privateKeyToAccount } from 'cive/accounts'
 import type {
   HardhatNetworkAccountsConfig,
@@ -12,20 +13,22 @@ export function getAccountsByHreAccounts(
 
   if (Array.isArray(accounts)) {
     for (const account of accounts) {
+      let privateKey: Hex
       if (typeof account === 'object') {
-        let privateKey = account.privateKey
-
-        if (!privateKey.startsWith('0x')) {
-          privateKey = `0x${privateKey}`
-        }
-        civeAccounts.push(
-          privateKeyToAccount(privateKey as `0x${string}`, {
-            networkId: networkId,
-          }),
-        )
+        privateKey = account.privateKey.startsWith('0x')
+          ? (account.privateKey as Hex)
+          : `0x${account.privateKey}`
+      } else {
+        privateKey = account.startsWith('0x')
+          ? (account as Hex)
+          : `0x${account}`
       }
+      civeAccounts.push(
+        privateKeyToAccount(privateKey as `0x${string}`, {
+          networkId: networkId,
+        }),
+      )
     }
   }
-
   return civeAccounts
 }
