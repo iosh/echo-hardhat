@@ -11,21 +11,17 @@ import {
 } from './internal/contracts.js'
 
 extendEnvironment((hre) => {
-  const { provider } = hre.network
-
   hre.cive = {
     getPublicClient(config) {
       return getPublicClient(hre, config)
     },
 
     getWalletClients(config) {
-      const accounts = hre.network.config.accounts
-      return getWalletClients(accounts, provider, config)
+      return getWalletClients(hre, config)
     },
 
     getWalletClient(config) {
-      const accounts = hre.network.config.accounts
-      return getWalletClient(accounts, provider, config)
+      return getWalletClient(hre, config)
     },
 
     deployContract: (contractName, constructorArgs, config) =>
