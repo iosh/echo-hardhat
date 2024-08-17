@@ -1,45 +1,35 @@
 import type { Chain, PublicClientConfig, WalletClientConfig } from 'cive'
-import type {
-  HardhatNetworkAccountsConfig,
-  HttpNetworkAccountsConfig,
-} from 'hardhat/types/config.js'
 
 import type { PrivateKeyAccount } from 'cive/accounts'
-import { HardhatPluginError } from 'hardhat/plugins.js'
-import type { EthereumProvider } from 'hardhat/types/provider.js'
 import type { HardhatRuntimeEnvironment } from 'hardhat/types/runtime.js'
-import type { PublicClient, WalletClient } from 'src/types.js'
+import type { PublicClient, WalletClient } from '../types.js'
 import { getAccountsByHreAccounts } from './accounts.js'
 import { getChain } from './chains.js'
+import { UnsupportedNetworkError } from './errors.js'
 
 export async function getPublicClient(
   her: HardhatRuntimeEnvironment,
-  config: Partial<PublicClientConfig>,
-) {
+  config?: Partial<PublicClientConfig>,
+): Promise<PublicClient> {
   const { network } = her
-
   if (!('url' in network.config)) {
-    throw new HardhatPluginError(
-      'hardhat-cive',
-      'hardhat-cive only support conflux mainnet testnet and private network, please use conflux network and set url in config file',
-    )
+    throw new UnsupportedNetworkError()
   }
-
-  const chain = await getChain(network.provider, network.config)
-
-  return innerGetPublicClient(network.provider, chain, config)
+  const cive = await import('cive')
+  const transport = cive.http(network.config.url)
+  const chain = await getChain(transport, network.config)
+  return innerGetPublicClient(chain, config)
 }
 
 export async function innerGetPublicClient(
-  provider: EthereumProvider,
   chain: Chain,
   publicClientConfig?: Partial<PublicClientConfig>,
 ): Promise<PublicClient> {
   const cive = await import('cive')
-
+  const transport = cive.http(chain.rpcUrls.default.http[0])
   const publicClient = cive.createPublicClient({
     chain: chain,
-    transport: cive.custom(provider),
+    transport: transport,
     ...publicClientConfig,
   }) as PublicClient
 
@@ -48,25 +38,34 @@ export async function innerGetPublicClient(
 
 export type getWalletClientsParameters = Partial<WalletClientConfig>
 export async function getWalletClients(
-  accounts: HardhatNetworkAccountsConfig | HttpNetworkAccountsConfig,
-  provider: EthereumProvider,
-  config: getWalletClientsParameters,
+  { network }: HardhatRuntimeEnvironment,
+  config: getWalletClientsParameters = {},
 ): Promise<WalletClient[]> {
-  const civeAccounts = getAccountsByHreAccounts(accounts, config.chainId)
+  const { accounts } = network.config
 
-  return innerGetWalletClients(provider, civeAccounts, config)
+  if (!('url' in network.config)) {
+    throw new UnsupportedNetworkError()
+  }
+  const cive = await import('cive')
+  const transport = cive.http(network.config.url)
+  const chain = await getChain(transport, network.config)
+
+  const civeAccounts = getAccountsByHreAccounts(accounts, chain.id)
+
+  return innerGetWalletClients(chain, civeAccounts, config)
 }
 
 export async function innerGetWalletClients(
-  provider: EthereumProvider,
+  chain: Chain,
   accounts: PrivateKeyAccount[],
-  walletClientConfig: getWalletClientsParameters,
-) {
+  walletClientConfig?: getWalletClientsParameters,
+): Promise<WalletClient[]> {
   const cive = await import('cive')
-
+  const transport = cive.http(chain.rpcUrls.default.http[0])
   const walletClients = accounts.map((account) => {
     return cive.createWalletClient({
-      transport: cive.custom(provider),
+      chain: chain,
+      transport: transport,
       account: account,
       ...walletClientConfig,
     }) as WalletClient
@@ -76,12 +75,21 @@ export async function innerGetWalletClients(
 }
 
 export async function getWalletClient(
-  accounts: HardhatNetworkAccountsConfig | HttpNetworkAccountsConfig,
-  provider: EthereumProvider,
+  her: HardhatRuntimeEnvironment,
   config: getWalletClientsParameters,
 ): Promise<WalletClient> {
+  const { network } = her
+
+  if (!('url' in network.config)) {
+    throw new UnsupportedNetworkError()
+  }
+  const cive = await import('cive')
+  const transport = cive.http(network.config.url)
+  const { accounts } = network.config
+  const chain = await getChain(transport, network.config)
+
   const civeAccounts = getAccountsByHreAccounts(accounts, config.chain!.id)
 
-  const pkAccounts = await innerGetWalletClients(provider, civeAccounts, config)
+  const pkAccounts = await innerGetWalletClients(chain, civeAccounts, config)
   return pkAccounts[0]
 }
