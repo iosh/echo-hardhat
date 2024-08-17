@@ -15,3 +15,6 @@ tsconfig*.tsbuildinfo
 .env.test.local
 .env.production.local
 .envrc
+
+artifacts
+cache
