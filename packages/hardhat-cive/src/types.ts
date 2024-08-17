@@ -30,19 +30,13 @@ export interface SendTransactionConfig {
 }
 
 export interface DeployContractConfig extends SendTransactionConfig {
-  confirmations?: number
-  libraries?: Libraries<civeT.Address>
-  chain: civeT.Chain
-}
-
-export interface DeployContractConfig extends SendTransactionConfig {
+  retryCount?: number
   confirmations?: number
   libraries?: Libraries<civeT.Address>
 }
 
 export interface SendDeploymentTransactionConfig extends SendTransactionConfig {
   libraries?: Libraries<civeT.Address>
-  chain: civeT.Chain
 }
 
 export interface GetContractAtConfig {
@@ -79,3 +73,5 @@ export declare function getContractAt<CN extends string>(
   address: civeT.Address,
   config?: GetContractAtConfig,
 ): Promise<GetContractReturnType>
+
+export type HttpTransportType = ReturnType<typeof civeT.http>
