@@ -2,20 +2,20 @@ import type { Link } from './bytecode.js'
 
 import { NomicLabsHardhatPluginError } from 'hardhat/plugins.js'
 
-export class HardhatViemError extends NomicLabsHardhatPluginError {
+export class HardhatCiveError extends NomicLabsHardhatPluginError {
   constructor(message: string, parent?: Error) {
-    super('@nomicfoundation/hardhat-viem', message, parent)
+    super('hardhat-viem', message, parent)
   }
 }
 
-export class UnknownDevelopmentNetworkError extends HardhatViemError {
+export class UnknownDevelopmentNetworkError extends HardhatCiveError {
   constructor() {
     super(`The chain id corresponds to a development network but we couldn't detect which one.
 Please report this issue if you're using Hardhat or Foundry.`)
   }
 }
 
-export class NetworkNotFoundError extends HardhatViemError {
+export class NetworkNotFoundError extends HardhatCiveError {
   constructor(chainId: number) {
     super(
       `No network with chain id ${chainId} found. You can override the chain by passing it as a parameter to the client getter:
@@ -31,7 +31,7 @@ You can find a list of supported networks here: https://github.com/wevm/viem/blo
   }
 }
 
-export class MultipleMatchingNetworksError extends HardhatViemError {
+export class MultipleMatchingNetworksError extends HardhatCiveError {
   constructor(chainId: number) {
     super(
       `Multiple networks with chain id ${chainId} found. You can override the chain by passing it as a parameter to the client getter:
@@ -47,7 +47,7 @@ You can find a list of supported networks here: https://github.com/wevm/viem/blo
   }
 }
 
-export class DefaultWalletClientNotFoundError extends HardhatViemError {
+export class DefaultWalletClientNotFoundError extends HardhatCiveError {
   constructor(networkName: string) {
     super(
       `Default wallet client not found. This can happen if no accounts were configured for this network (network: '${networkName}').
@@ -61,7 +61,7 @@ const contractB = await hre.viem.getContractAt("B", address, { walletClient });`
   }
 }
 
-export class InvalidConfirmationsError extends HardhatViemError {
+export class InvalidConfirmationsError extends HardhatCiveError {
   constructor() {
     super(
       'deployContract does not support 0 confirmations. Use sendDeploymentTransaction if you want to handle the deployment transaction yourself.',
@@ -69,7 +69,7 @@ export class InvalidConfirmationsError extends HardhatViemError {
   }
 }
 
-export class DeployContractError extends HardhatViemError {
+export class DeployContractError extends HardhatCiveError {
   constructor(txHash: string, blockHash: string) {
     super(
       `The deployment transaction '${txHash}' was mined in block '${blockHash}' but its receipt doesn't contain a contract address`,
@@ -77,7 +77,7 @@ export class DeployContractError extends HardhatViemError {
   }
 }
 
-export class AmbigousLibraryNameError extends HardhatViemError {
+export class AmbigousLibraryNameError extends HardhatCiveError {
   constructor(
     contractName: string,
     libraryName: string,
@@ -93,7 +93,7 @@ To fix this, choose one of these fully qualified library names and replace where
   }
 }
 
-export class OverlappingLibraryNamesError extends HardhatViemError {
+export class OverlappingLibraryNamesError extends HardhatCiveError {
   constructor(sourceName: string, libraryName: string) {
     super(
       `The library name "${libraryName}" and "${sourceName}:${libraryName}" are both linking to the same library. Please use one of them, or If they are not the same library, use fully qualified names instead.`,
@@ -101,7 +101,7 @@ export class OverlappingLibraryNamesError extends HardhatViemError {
   }
 }
 
-export class UnnecessaryLibraryLinkError extends HardhatViemError {
+export class UnnecessaryLibraryLinkError extends HardhatCiveError {
   constructor(contractName: string, libraryName: string) {
     super(
       `The library name "${libraryName}" was linked but it's not referenced by the "${contractName}" contract.`,
@@ -109,7 +109,7 @@ export class UnnecessaryLibraryLinkError extends HardhatViemError {
   }
 }
 
-export class MissingLibraryAddressError extends HardhatViemError {
+export class MissingLibraryAddressError extends HardhatCiveError {
   constructor(
     contractName: string,
     missingLibraries: Pick<Link, 'sourceName' | 'libraryName'>[],
@@ -120,6 +120,14 @@ ${missingLibraries
   .map(({ sourceName, libraryName }) => `\t* "${sourceName}:${libraryName}"`)
   .join(',\n')}
 Please deploy them first and link them while deploying "${contractName}"`,
+    )
+  }
+}
+
+export class UnsupportedNetworkError extends HardhatCiveError {
+  constructor() {
+    super(
+      'hardhat-cive only support conflux mainnet testnet and private network, please endpoint url to config file',
     )
   }
 }
