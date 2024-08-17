@@ -1,13 +1,21 @@
 import type { Chain } from 'cive'
+import { HardhatPluginError } from 'hardhat/plugins.js'
 import type { HttpNetworkConfig } from 'hardhat/types/config.js'
-import type { EthereumProvider } from 'hardhat/types/provider.js'
 import memoize from 'lodash.memoize'
+import type { HttpTransportType } from '../types.js'
+
 export async function getChain(
-  provider: EthereumProvider,
+  transport: HttpTransportType,
   config: HttpNetworkConfig,
 ): Promise<Chain> {
   const chains = await import('cive/chains')
-  const networkId = await getNetworkId(provider)
+  const networkId = await getNetworkId(transport)
+  if (typeof config === 'undefined' || !('url' in config)) {
+    throw new HardhatPluginError(
+      'hardhat-cive',
+      'The current network is not mainnet or testnet, please set url in config file',
+    )
+  }
 
   if (isConfluxTestNetwork(networkId)) {
     return chains.testnet
@@ -22,16 +30,23 @@ export async function getChain(
   return utils.defineChain({
     id: networkId,
     name: `net${networkId}`,
-    nativeCurrency: { name: 'CFX', decimals: 18, symbol: 'CFX' },
     rpcUrls: { default: { http: [config.url] } },
-  })
+    nativeCurrency: {
+      decimals: 18,
+      name: 'CFX',
+      symbol: 'CFX',
+    },
+  }) as Chain
 }
 
-export const getNetworkId = memoize(async (provider: EthereumProvider) => {
-  const status = await provider.send('cfx_getStatus')
+export const getNetworkId: (transport: HttpTransportType) => Promise<number> =
+  memoize(async (transport: HttpTransportType) => {
+    const status = (await transport({}).request({
+      method: 'cfx_getStatus',
+    })) as any
 
-  return Number(status.networkId)
-})
+    return Number(status.networkId)
+  })
 
 export const isConfluxTestNetwork = (networkId: number) => {
   return networkId === 1
