@@ -1,23 +1,31 @@
 {
   "name": "hardhat-cive",
   "version": "0.0.0",
-  "type": "module",
   "description": "",
+  "type": "module",
   "main": "./_cjs/index.js",
-  "module": "./_esm/index.js",
   "types": "./_types/index.d.ts",
   "typings": "./_types/index.d.ts",
   "scripts": {
-    "build": "pnpm run build:cjs && pnpm run build:esm && pnpm run build:types",
+    "build": "pnpm run build:cjs && pnpm run build:types",
     "build:cjs": "tsc --project ./tsconfig.build.json --module commonjs --outDir ./_cjs --removeComments --verbatimModuleSyntax false && printf '{\"type\":\"commonjs\"}' > ./_cjs/package.json",
-    "build:esm": " tsc --project ./tsconfig.build.json --module es2020 --outDir ./_esm && printf '{\"type\": \"module\",\"sideEffects\":false}' > ./_esm/package.json",
     "build:types": "tsc --project ./tsconfig.build.json --module esnext --declarationDir ./_types --emitDeclarationOnly --declaration --declarationMap",
-    "clean": "rm -rf *.tsbuildinfo src/*.tsbuildinfo _esm _cjs _types"
+    "clean": "rm -rf *.tsbuildinfo src/*.tsbuildinfo _esm _cjs _types",
+    "test": "vitest --config ../../../../test/vitest.config.js dev"
   },
-  "keywords": [],
+  "keywords": ["conflux", "cive", "hardhat", "hardhat-plugin"],
   "author": "",
   "license": "ISC",
+  "devDependencies": {
+    "@types/lodash.memoize": "^4.1.9",
+    "cive": "^0.2.0",
+    "hardhat": "^2.22.8"
+  },
+  "peerDependencies": {
+    "cive": "^0.2.0",
+    "hardhat": "^2.22.8"
+  },
   "dependencies": {
-    "cive": "^0.0.4"
+    "lodash.memoize": "^4.1.2"
   }
 }
