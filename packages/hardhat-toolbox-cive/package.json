@@ -1,6 +1,6 @@
 {
-  "name": "@civex/hardhat-cive",
-  "version": "0.0.0",
+  "name": "@civex/hardhat-toolbox-cive",
+  "version": "1.0.0",
   "description": "",
   "type": "module",
   "main": "./_cjs/index.js",
@@ -13,19 +13,30 @@
     "clean": "rm -rf *.tsbuildinfo src/*.tsbuildinfo _esm _cjs _types",
     "test": "vitest --config ../../../../test/vitest.config.js dev"
   },
-  "keywords": ["conflux", "cive", "hardhat", "hardhat-plugin"],
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/lodash.memoize": "^4.1.9",
+    "@types/chai": "^4.3.17",
+    "@types/chai-as-promised": "^7.1.8",
+    "@types/mocha": "^10.0.7",
+    "@types/node": "^22.4.1",
+    "chai": "^5.1.1",
     "cive": "^0.2.0",
-    "hardhat": "^2.22.8"
+    "hardhat": "^2.22.8",
+    "hardhat-gas-reporter": "^2.2.1",
+    "solidity-coverage": "^0.8.12"
   },
   "peerDependencies": {
+    "@types/chai": "^4.3.17",
+    "@types/chai-as-promised": "^7.1.8",
+    "@types/mocha": "^10.0.7",
+    "@types/node": "^22.4.1",
+    "@civex/hardhat-cive": "workspace:*",
+    "chai": "^5.1.1",
     "cive": "^0.2.0",
-    "hardhat": "^2.22.8"
-  },
-  "dependencies": {
-    "lodash.memoize": "^4.1.2"
+    "hardhat": "^2.22.8",
+    "hardhat-gas-reporter": "^2.2.1",
+    "solidity-coverage": "^0.8.12"
   }
 }
