@@ -1,16 +1,14 @@
 {
   "name": "@civex/hardhat-toolbox-cive",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "",
   "type": "module",
-  "main": "./_cjs/index.js",
-  "types": "./_types/index.d.ts",
-  "typings": "./_types/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "typings": "./dist/index.d.ts",
   "scripts": {
-    "build": "pnpm run build:cjs && pnpm run build:types",
-    "build:cjs": "tsc --project ./tsconfig.build.json --module commonjs --outDir ./_cjs --removeComments --verbatimModuleSyntax false && printf '{\"type\":\"commonjs\"}' > ./_cjs/package.json",
-    "build:types": "tsc --project ./tsconfig.build.json --module esnext --declarationDir ./_types --emitDeclarationOnly --declaration --declarationMap",
-    "clean": "rm -rf *.tsbuildinfo src/*.tsbuildinfo _esm _cjs _types",
+    "build": "tsc --project ./tsconfig.build.json",
+    "clean": "rm -rf *.tsbuildinfo src/*.tsbuildinfo dist",
     "test": "vitest --config ../../../../test/vitest.config.js dev"
   },
   "keywords": [],

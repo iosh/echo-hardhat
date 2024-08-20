@@ -2,6 +2,7 @@
   "name": "@civex/hardhat-cive",
   "version": "0.0.0",
   "description": "",
+  "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "typings": "./dist/index.d.ts",

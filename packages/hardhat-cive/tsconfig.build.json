@@ -4,6 +4,7 @@
   "exclude": ["src/**/*.test.ts"],
   "compilerOptions": {
     "module": "Node16",
+    "declarationMap": true,
     "moduleResolution": "Node16",
     "declaration": true,
     "sourceMap": true,
