@@ -1,0 +1,31 @@
+{
+  "name": "@civex/hardhat-ignition-cive",
+  "version": "0.0.0",
+  "description": "",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "typings": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --project ./tsconfig.build.json",
+    "clean": "rm -rf *.tsbuildinfo src/*.tsbuildinfo dist",
+    "test": "vitest --config ../../../../test/vitest.config.js dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@civex/hardhat-cive": "workspace:*",
+    "@nomicfoundation/hardhat-ignition": "^0.15.5",
+    "@nomicfoundation/ignition-core": "^0.15.5",
+    "cive": "^0.2.0",
+    "hardhat": "^2.22.8"
+  },
+  "peerDependencies": {
+    "@civex/hardhat-cive": "workspace:*",
+    "@nomicfoundation/hardhat-ignition": "^0.15.5",
+    "@nomicfoundation/ignition-core": "^0.15.5",
+    "cive": "^0.2.0",
+    "hardhat": "^2.22.8"
+  }
+}
