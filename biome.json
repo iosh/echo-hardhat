@@ -1,9 +1,7 @@
 {
   "files": {
     "ignore": [
-      "_cjs",
-      "_esm",
-      "_types",
+      "dist",
       ".next",
       ".vercel",
       "node_modules",
