@@ -9,8 +9,8 @@ import {
   getContractAt,
   sendDeploymentTransaction,
 } from './internal/contracts.js'
-import './internal/type-extensions'
-import './internal/tasks'
+import './internal/type-extensions.js'
+import './internal/tasks.js'
 
 extendEnvironment((hre) => {
   hre.cive = {
