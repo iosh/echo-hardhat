@@ -7,7 +7,8 @@
   "types": "./dist/index.d.ts",
   "typings": "./dist/index.d.ts",
   "scripts": {
-    "build": "bun ./scripts/compile.ts create2 &&  tsc --project ./tsconfig.build.json",
+    "build:contract": "bun ./scripts/compile.ts create2 && bun ./scripts/compile.ts minimal",
+    "build": "tsc --project ./tsconfig.build.json",
     "clean": "rm -rf *.tsbuildinfo ./src/*.tsbuildinfo dist ./test/*/**/artifacts ./test/*/**/cache",
     "test": "vitest --config ../../../../test/vitest.config.js dev"
   },
