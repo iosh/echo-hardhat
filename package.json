@@ -1,6 +1,9 @@
 {
   "private": "true",
   "scripts": {
+    "changeset:version": "changeset version && pnpm install --lockfile-only  && pnpm format",
+    "changeset:prepublish": "pnpm build",
+    "changeset:publish": "pnpm changeset:prepublish && changeset publish",
     "build": "pnpm run -r build",
     "format": "biome format --write",
     "lint": "biome check --fix",
