@@ -3,7 +3,7 @@ import { type PrivateKeyAccount, privateKeyToAccount } from 'cive/accounts'
 import type {
   HardhatNetworkAccountsConfig,
   HttpNetworkAccountsConfig,
-} from 'hardhat/types/config.js'
+} from 'hardhat/types/config'
 
 export function getAccountsByHreAccounts(
   accounts: HardhatNetworkAccountsConfig | HttpNetworkAccountsConfig,

@@ -8,14 +8,14 @@ import {
   TASK_COMPILE_REMOVE_OBSOLETE_ARTIFACTS,
   TASK_COMPILE_SOLIDITY,
   TASK_COMPILE_SOLIDITY_EMIT_ARTIFACTS,
-} from 'hardhat/builtin-tasks/task-names.js'
-import { subtask } from 'hardhat/config.js'
-import { getAllFilesMatching } from 'hardhat/internal/util/fs-utils.js'
+} from 'hardhat/builtin-tasks/task-names'
+import { subtask } from 'hardhat/config'
+import { getAllFilesMatching } from 'hardhat/internal/util/fs-utils'
 import {
   getFullyQualifiedName,
   parseFullyQualifiedName,
-} from 'hardhat/utils/contract-names.js'
-import { replaceBackslashes } from 'hardhat/utils/source-names.js'
+} from 'hardhat/utils/contract-names'
+import { replaceBackslashes } from 'hardhat/utils/source-names'
 
 interface EmittedArtifacts {
   artifactsEmittedPerFile: ArtifactsEmittedPerFile

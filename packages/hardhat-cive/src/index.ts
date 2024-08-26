@@ -1,16 +1,16 @@
-import { extendEnvironment } from 'hardhat/config.js'
+import { extendEnvironment } from 'hardhat/config'
 import {
   getPublicClient,
   getWalletClient,
   getWalletClients,
-} from './internal/client.js'
+} from './internal/client'
 import {
   deployContract,
   getContractAt,
   sendDeploymentTransaction,
-} from './internal/contracts.js'
-import './internal/type-extensions.js'
-import './internal/tasks.js'
+} from './internal/contracts'
+import './internal/type-extensions'
+import './internal/tasks'
 
 extendEnvironment((hre) => {
   hre.cive = {

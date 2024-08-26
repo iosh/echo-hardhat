@@ -1,4 +1,4 @@
-import 'hardhat/types/runtime.js'
+import 'hardhat/types/runtime'
 import type { PublicClientConfig, WalletClientConfig } from 'cive'
 import type {
   PublicClient,
@@ -6,10 +6,10 @@ import type {
   deployContract,
   getContractAt,
   sendDeploymentTransaction,
-} from '../types.js'
-import type { getWalletClientsParameters } from './client.js'
+} from '../types'
+import type { getWalletClientsParameters } from './client'
 
-declare module 'hardhat/types/runtime.js' {
+declare module 'hardhat/types/runtime' {
   interface HardhatRuntimeEnvironment {
     cive: {
       getPublicClient(
@@ -27,8 +27,7 @@ declare module 'hardhat/types/runtime.js' {
   }
 }
 
-declare module 'hardhat/types/artifacts.js' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+declare module 'hardhat/types/artifacts' {
   interface ArtifactsMap {}
 
   interface Artifacts {
