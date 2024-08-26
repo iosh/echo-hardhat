@@ -1,4 +1,4 @@
-require('../../../_cjs/src/index')
+require('../../../dist')
 
 /**
  * @type  {import('hardhat/config').HardhatUserConfig}

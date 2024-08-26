@@ -3,9 +3,9 @@
   "include": ["src"],
   "exclude": ["src/**/*.test.ts"],
   "compilerOptions": {
-    "module": "Node16",
+    "module": "CommonJS",
     "declarationMap": true,
-    "moduleResolution": "Node16",
+    "moduleResolution": "Node10",
     "declaration": true,
     "sourceMap": true,
     "rootDir": "./src",
