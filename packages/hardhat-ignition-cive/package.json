@@ -8,7 +8,6 @@
   "typings": "./dist/index.d.ts",
   "scripts": {
     "build:contract": "bun ./scripts/compile.ts create2 && bun ./scripts/compile.ts minimal",
-    "build": "tsc --project ./tsconfig.build.json",
     "clean": "rm -rf *.tsbuildinfo ./src/*.tsbuildinfo dist ./test/*/**/artifacts ./test/*/**/cache",
     "test": "vitest --config ../../../../test/vitest.config.js dev"
   },

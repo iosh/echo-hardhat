@@ -7,7 +7,6 @@
   "types": "./dist/index.d.ts",
   "typings": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc --project ./tsconfig.build.json",
     "clean": "rm -rf *.tsbuildinfo src/*.tsbuildinfo dist",
     "test": "vitest --config ../../../../test/vitest.config.js dev"
   },
