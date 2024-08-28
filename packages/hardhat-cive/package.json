@@ -11,7 +11,9 @@
   },
   "keywords": ["conflux", "cive", "hardhat", "hardhat-plugin"],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
+  "repository": "iosh/hardhat",
+  "homepage": "https://github.com/iosh/hardhat",
   "devDependencies": {
     "@types/lodash.memoize": "^4.1.9",
     "cive": "^0.3.0",

@@ -14,7 +14,9 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
+  "repository": "iosh/hardhat",
+  "homepage": "https://github.com/iosh/hardhat",
   "devDependencies": {
     "@civex/hardhat-cive": "workspace:*",
     "@nomicfoundation/hardhat-ignition": "^0.15.5",

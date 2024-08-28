@@ -13,7 +13,9 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
+  "repository": "iosh/hardhat",
+  "homepage": "https://github.com/iosh/hardhat",
   "devDependencies": {
     "@types/chai": "^4.3.17",
     "@types/chai-as-promised": "^7.1.8",
