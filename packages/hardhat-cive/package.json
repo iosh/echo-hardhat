@@ -14,11 +14,11 @@
   "license": "ISC",
   "devDependencies": {
     "@types/lodash.memoize": "^4.1.9",
-    "cive": "^0.2.0",
+    "cive": "^0.3.0",
     "hardhat": "^2.22.8"
   },
   "peerDependencies": {
-    "cive": "^0.2.0",
+    "cive": "^0.3.0",
     "hardhat": "^2.22.8"
   },
   "dependencies": {
