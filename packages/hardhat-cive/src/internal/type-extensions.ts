@@ -18,7 +18,9 @@ declare module 'hardhat/types/runtime' {
       getWalletClients(
         config?: Partial<WalletClientConfig>,
       ): Promise<WalletClient[]>
-      getWalletClient(config: getWalletClientsParameters): Promise<WalletClient>
+      getWalletClient(
+        config?: getWalletClientsParameters,
+      ): Promise<WalletClient>
 
       deployContract: typeof deployContract
       sendDeploymentTransaction: typeof sendDeploymentTransaction
