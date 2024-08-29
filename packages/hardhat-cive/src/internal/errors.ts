@@ -8,13 +8,6 @@ export class HardhatCiveError extends NomicLabsHardhatPluginError {
   }
 }
 
-export class UnknownDevelopmentNetworkError extends HardhatCiveError {
-  constructor() {
-    super(`The chain id corresponds to a development network but we couldn't detect which one.
-Please report this issue if you're using Hardhat or Foundry.`)
-  }
-}
-
 export class NetworkNotFoundError extends HardhatCiveError {
   constructor(chainId: number) {
     super(
@@ -127,7 +120,7 @@ Please deploy them first and link them while deploying "${contractName}"`,
 export class UnsupportedNetworkError extends HardhatCiveError {
   constructor() {
     super(
-      'hardhat-cive only support conflux mainnet testnet and private network, please endpoint url to config file',
+      'hardhat-cive only support conflux mainnet testnet and private network, please add endpoint url to config file',
     )
   }
 }

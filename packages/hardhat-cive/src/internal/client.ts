@@ -6,15 +6,18 @@ import type { PublicClient, WalletClient } from '../types'
 import { getAccountsByHreAccounts } from './accounts'
 import { getChain } from './chains'
 import { UnsupportedNetworkError } from './errors'
+import { checkNetworkConfig } from './utils'
 
 export async function getPublicClient(
   her: HardhatRuntimeEnvironment,
   config?: Partial<PublicClientConfig>,
 ): Promise<PublicClient> {
   const { network } = her
-  if (!('url' in network.config)) {
+
+  if (!checkNetworkConfig(network.config)) {
     throw new UnsupportedNetworkError()
   }
+
   const cive = await import('cive')
   const transport = cive.http(network.config.url)
   const chain = await getChain(transport, network.config)
@@ -43,9 +46,10 @@ export async function getWalletClients(
 ): Promise<WalletClient[]> {
   const { accounts } = network.config
 
-  if (!('url' in network.config)) {
+  if (!checkNetworkConfig(network.config)) {
     throw new UnsupportedNetworkError()
   }
+
   const cive = await import('cive')
   const transport = cive.http(network.config.url)
   const chain = await getChain(transport, network.config)
@@ -76,19 +80,23 @@ export async function innerGetWalletClients(
 
 export async function getWalletClient(
   her: HardhatRuntimeEnvironment,
-  config: getWalletClientsParameters,
+  config?: getWalletClientsParameters,
 ): Promise<WalletClient> {
   const { network } = her
 
-  if (!('url' in network.config)) {
+  if (!checkNetworkConfig(network.config)) {
     throw new UnsupportedNetworkError()
   }
+
   const cive = await import('cive')
+
   const transport = cive.http(network.config.url)
+
   const { accounts } = network.config
+
   const chain = await getChain(transport, network.config)
 
-  const civeAccounts = getAccountsByHreAccounts(accounts, config.chain!.id)
+  const civeAccounts = getAccountsByHreAccounts(accounts, chain.id)
 
   const pkAccounts = await innerGetWalletClients(chain, civeAccounts, config)
   return pkAccounts[0]

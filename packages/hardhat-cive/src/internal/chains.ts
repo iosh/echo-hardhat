@@ -1,5 +1,4 @@
 import type { Chain } from 'cive'
-import { HardhatPluginError } from 'hardhat/plugins'
 import type { HttpNetworkConfig } from 'hardhat/types/config'
 import memoize from 'lodash.memoize'
 import type { HttpTransportType } from '../types'
@@ -10,12 +9,6 @@ export async function getChain(
 ): Promise<Chain> {
   const chains = await import('cive/chains')
   const networkId = await getNetworkId(transport)
-  if (typeof config === 'undefined' || !('url' in config)) {
-    throw new HardhatPluginError(
-      'hardhat-cive',
-      'The current network is not mainnet or testnet, please set url in config file',
-    )
-  }
 
   if (isConfluxTestNetwork(networkId)) {
     return chains.testnet
