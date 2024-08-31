@@ -1,12 +1,12 @@
 import type { Chain, PublicClientConfig, WalletClientConfig } from 'cive'
 
 import type { PrivateKeyAccount } from 'cive/accounts'
-import type { HardhatRuntimeEnvironment } from 'hardhat/types/runtime'
-import type { PublicClient, WalletClient } from '../types'
-import { getAccountsByHreAccounts } from './accounts'
-import { getChain } from './chains'
-import { UnsupportedNetworkError } from './errors'
-import { checkNetworkConfig } from './utils'
+import type { HardhatRuntimeEnvironment } from 'hardhat/types/runtime.js'
+import type { PublicClient, WalletClient } from '../types.js'
+import { getAccountsByHreAccounts } from './accounts.js'
+import { getChain } from './chains.js'
+import { UnsupportedNetworkError } from './errors.js'
+import { checkNetworkConfig } from './utils.js'
 
 export async function getPublicClient(
   her: HardhatRuntimeEnvironment,

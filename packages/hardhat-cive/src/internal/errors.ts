@@ -1,6 +1,6 @@
-import type { Link } from './bytecode'
+import type { Link } from './bytecode.js'
 
-import { NomicLabsHardhatPluginError } from 'hardhat/plugins'
+import { NomicLabsHardhatPluginError } from 'hardhat/plugins.js'
 
 export class HardhatCiveError extends NomicLabsHardhatPluginError {
   constructor(message: string, parent?: Error) {

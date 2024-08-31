@@ -1,4 +1,4 @@
-import 'hardhat/types/runtime'
+import 'hardhat/types/runtime.js'
 import type { PublicClientConfig, WalletClientConfig } from 'cive'
 import type {
   PublicClient,
@@ -6,10 +6,10 @@ import type {
   deployContract,
   getContractAt,
   sendDeploymentTransaction,
-} from '../types'
-import type { getWalletClientsParameters } from './client'
+} from '../types.js'
+import type { getWalletClientsParameters } from './client.js'
 
-declare module 'hardhat/types/runtime' {
+declare module 'hardhat/types/runtime.js' {
   interface HardhatRuntimeEnvironment {
     cive: {
       getPublicClient(
@@ -29,7 +29,7 @@ declare module 'hardhat/types/runtime' {
   }
 }
 
-declare module 'hardhat/types/artifacts' {
+declare module 'hardhat/types/artifacts.js' {
   interface ArtifactsMap {}
 
   interface Artifacts {

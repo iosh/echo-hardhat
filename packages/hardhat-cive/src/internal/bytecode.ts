@@ -1,11 +1,11 @@
 import type { Hex } from 'cive'
-import type { Artifact } from 'hardhat/types/artifacts'
+import type { Artifact } from 'hardhat/types/artifacts.js'
 import {
   AmbigousLibraryNameError,
   MissingLibraryAddressError,
   OverlappingLibraryNamesError,
   UnnecessaryLibraryLinkError,
-} from './errors'
+} from './errors.js'
 
 export interface Libraries<Address = string> {
   [libraryName: string]: Address

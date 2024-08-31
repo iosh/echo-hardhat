@@ -1,7 +1,7 @@
 import type { Chain } from 'cive'
-import type { HttpNetworkConfig } from 'hardhat/types/config'
+import type { HttpNetworkConfig } from 'hardhat/types/config.js'
 import memoize from 'lodash.memoize'
-import type { HttpTransportType } from '../types'
+import type { HttpTransportType } from '../types.js'
 
 export async function getChain(
   transport: HttpTransportType,

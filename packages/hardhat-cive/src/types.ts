@@ -1,8 +1,8 @@
 import type * as civeT from 'cive'
 import type { Account } from 'cive/accounts'
 import type * as civeActions from 'cive/actions'
-import type { ArtifactsMap } from 'hardhat/types/artifacts'
-import type { Libraries } from './internal/bytecode'
+import type { ArtifactsMap } from 'hardhat/types/artifacts.js'
+import type { Libraries } from './internal/bytecode.js'
 
 export type PublicClient = civeT.PublicClient<civeT.Transport, civeT.Chain>
 export type WalletClient = civeT.WalletClient<
@@ -75,3 +75,5 @@ export declare function getContractAt<CN extends string>(
 ): Promise<GetContractReturnType>
 
 export type HttpTransportType = ReturnType<typeof civeT.http>
+
+export type { AbiParameterToPrimitiveType } from 'cive'

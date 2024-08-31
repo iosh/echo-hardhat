@@ -9,15 +9,18 @@ import type {
   PublicClient,
   SendDeploymentTransactionConfig,
   WalletClient,
-} from '../types'
-import { type Libraries, resolveBytecodeWithLinkedLibraries } from './bytecode'
-import { getPublicClient, getWalletClients } from './client'
+} from '../types.js'
+import {
+  type Libraries,
+  resolveBytecodeWithLinkedLibraries,
+} from './bytecode.js'
+import { getPublicClient, getWalletClients } from './client.js'
 import {
   DefaultWalletClientNotFoundError,
   DeployContractError,
   HardhatCiveError,
   InvalidConfirmationsError,
-} from './errors'
+} from './errors.js'
 
 async function getContractAbiAndBytecode(
   artifacts: HardhatRuntimeEnvironment['artifacts'],
