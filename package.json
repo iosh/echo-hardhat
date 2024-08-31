@@ -1,5 +1,6 @@
 {
   "private": "true",
+  "type": "module",
   "scripts": {
     "changeset:version": "changeset version && pnpm install --lockfile-only  && pnpm format",
     "changeset:prepublish": "pnpm build",
