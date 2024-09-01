@@ -85,14 +85,18 @@ export default config;
 pragma solidity ^0.8.24;
 
 contract Test {
-    address public deployer;
+    address public savedAddress;
     uint256 public value;
     constructor() {
-        deployer = msg.sender;
+        savedAddress = msg.sender;
     }
 
-    function getDeployer() public view returns (address) {
-        return deployer;
+    function setSavedAddress(address _address) public {
+        savedAddress = _address;
+    }
+
+    function getSavedAddress() public view returns (address) {
+        return savedAddress;
     }
 
     function setValue(uint256 _value) public {
