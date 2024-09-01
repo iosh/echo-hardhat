@@ -84,22 +84,26 @@ export default config;
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-contract MyToken {
-  uint256 public totalSupply;
+contract Test {
+    address public deployer;
+    uint256 public value;
+    constructor() {
+        deployer = msg.sender;
+    }
 
-  constructor(uint256 _initialSupply) {
-    totalSupply = _initialSupply;
-  }
+    function getDeployer() public view returns (address) {
+        return deployer;
+    }
 
-  function increaseSupply(uint256 _amount) public {
-    require(_amount > 0, "Amount must be greater than 0");
-    totalSupply += _amount;
-  }
+    function setValue(uint256 _value) public {
+        value = _value;
+    }
 
-  function getCurrentSupply() public view returns (uint256) {
-    return totalSupply;
-  }
+    function getValue() public view returns (uint256) {
+        return value;
+    }
 }
+
 
 ```
 
@@ -111,17 +115,36 @@ Run `npx hardhat compile`to compile your contracts and produce types in the arti
 import hre from "hardhat";
 
 async function main() {
-  const myToken = await hre.cive.deployContract("MyToken", [1_000_000n]);
-  const initialSupply = await myToken.read.totalSupply();
-  console.log(`Initial supply of MyToken: ${initialSupply}`); // Initial supply of MyToken: 1000000
-  const hash = await myToken.write.increaseSupply([500_000n]);
-  // increaseSupply sends a tx, so we need to wait for it to be mined
+  const testContract = await hre.cive.deployContract("Test");
+
+  const defaultAddress = await testContract.read.getSavedAddress();
+
+  console.log("default address is ", defaultAddress); //default address is cfxtest:....
+
+  const hash = await testContract.write.setSavedAddress([
+    "cfxtest:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa6f0vrcsw",
+  ]); // Zero Address
+
+  // sends a tx, so we need to wait for it to be mined
   const publicClient = await hre.cive.getPublicClient();
 
   await publicClient.waitForTransactionReceipt({ hash });
 
-  const newSupply = await myToken.read.getCurrentSupply();
-  console.log(`New supply of MyToken: ${newSupply}`); // New supply of MyToken: 1500000
+  const newAddress = await testContract.read.getSavedAddress();
+
+  console.log("new address is ", newAddress); // new address is  cfxtest:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa6f0vrcsw
+
+  const defaultValue = await testContract.read.getValue();
+
+  console.log("default value is ", defaultValue); // default value is  0n
+
+  const hash2 = await testContract.write.setValue([100n]);
+
+  await publicClient.waitForTransactionReceipt({ hash: hash2 });
+
+  const newValue = await testContract.read.getValue();
+
+  console.log("new value is ", newValue); // new value is  100n
 }
 
 main()
@@ -132,11 +155,14 @@ main()
   });
 ```
 
+If you are getting the `Timed out while waiting for transaction with hash` error, you can try again, or set the `retryCount` to a higher value.
+
+```ts
+await publicClient.waitForTransactionReceipt({ hash, retryCount: 11 }); // default retryCount is 6
+```
+
 4. Run `npx hardhat run scripts/contracts.ts --network conflux`
 
 You need to specify the network you want to use. Because this plugin is only support the `conflux core space` mainnet and testnet.
 
-
-
 Read more about cive: https://github.com/iosh/cive
-
