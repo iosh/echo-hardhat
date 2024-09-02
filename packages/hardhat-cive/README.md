@@ -78,7 +78,7 @@ const config: HardhatUserConfig = {
 export default config;
 ```
 
-2. Create a `MyToken.sol` file inside your project's `contracts` folder.
+2. Create a `Test.sol` file inside your project's `contracts` folder.
 
 ```solidity
 // SPDX-License-Identifier: MIT
