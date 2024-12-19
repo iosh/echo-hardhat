@@ -1,5 +1,11 @@
 # @civex/hardhat-cive
 
+## 0.0.2
+
+### Patch Changes
+
+- f425309: Updated cive version
+
 ## 0.0.1
 
 ### Patch Changes
