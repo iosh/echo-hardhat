@@ -1,0 +1,18 @@
+{
+  "name": "@civex/hardhat-node",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "typings": "./dist/index.d.ts",
+  "scripts": {
+    "clean": "rm -rf ./dist",
+    "build": "tsc --project ./tsconfig.build.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@xcfx/node": "^0.4.0"
+  }
+}
