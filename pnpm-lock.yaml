@@ -65,6 +65,12 @@ importers:
         specifier: ^2.22.8
         version: 2.22.17(typescript@5.7.2)
 
+  packages/hardhat-node:
+    dependencies:
+      '@xcfx/node':
+        specifier: ^0.4.0
+        version: 0.4.0(typescript@5.7.2)
+
   packages/hardhat-toolbox-cive:
     dependencies:
       '@civex/hardhat-cive':
@@ -842,6 +848,34 @@ packages:
   '@vitest/utils@2.1.8':
     resolution: {integrity: sha512-dwSoui6djdwbfFmIgbIjX2ZhIoG7Ex/+xpxyiEgIGzjliY8xGkcpITKTlp6B4MgtGkF2ilvm97cPM96XZaAgcA==}
 
+  '@xcfx/node-darwin-arm64@0.4.0':
+    resolution: {integrity: sha512-q6H5qxR7nV8QCrjWNryfbrQHUW/skG+f/00AL+UncW1cyTFSyiGBjq1BrrRbdxh5Ak2iMNsw33SRxHEa9c6ikw==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@xcfx/node-darwin-x64@0.4.0':
+    resolution: {integrity: sha512-gMqFBGIzt53yr+L6o3Z77Sn16fonK2V+sVUY/uZLXltQsP4GyEwtPxFibso9tSn18++osNdg2xBOkzdjVk+/pA==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@xcfx/node-linux-x64-gnu@0.4.0':
+    resolution: {integrity: sha512-4N04S2pEBbCgcCcXrZK9Expq/cJz1CsgLM+hvK8BP8F42MuM6UEGzp9xnOajLIzq/xI+WwhD8K9w4DH0dhLWHw==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+
+  '@xcfx/node-win32-x64-msvc@0.4.0':
+    resolution: {integrity: sha512-b6B6FpaLXnBZkZ6q6mOvEb5vbuJledXH80UUL9CL3nqelILbu2tqS9lyjImoaMwpgVNQTSTjpZEwjsIB23ozsw==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [win32]
+
+  '@xcfx/node@0.4.0':
+    resolution: {integrity: sha512-BonS18jyth2qGy9RQixcEF7DxfigcSJiPY6JWZkB7CSsmkjSfaSTZtQe6OX8UiFF6uNIuZVXOaDg2byk2E67fg==}
+    engines: {node: '>= 10'}
+
   abbrev@1.0.9:
     resolution: {integrity: sha512-LEyx4aLEC3x6T0UguF6YILf+ntvmOaWsVfENmIW0E9H09vKlLDGelMjjSm0jkDHALj8A8quZ/HapKNigzwge+Q==}
 
@@ -1097,6 +1131,9 @@ packages:
 
   cive@0.2.0:
     resolution: {integrity: sha512-bdLzxICX0MHr8MQb9RrHWZ8miTLPrcYcNqNWYssaB6eefBNxxQbzWygAGRoJT9L337HA5esitiNDtK91pQHqhw==}
+
+  cive@0.8.0:
+    resolution: {integrity: sha512-k+uMzfH5XRoJCrY1S92dEWYzgh2O45VWlH2XHMZdTeKS2xJA8LSFERv22hW8vOHnYvUq6FOqDQPaU9e8XKifgg==}
 
   cive@0.8.1:
     resolution: {integrity: sha512-P7Ll9gFTCt6jHsC13VRRAgvEefQSapRMMJSKFvGcEUmtmaNXl/g2jwxcWDNYSGoZhf1HjufEeO1wjlt26AIMQw==}
@@ -3515,6 +3552,31 @@ snapshots:
       loupe: 3.1.2
       tinyrainbow: 1.2.0
 
+  '@xcfx/node-darwin-arm64@0.4.0':
+    optional: true
+
+  '@xcfx/node-darwin-x64@0.4.0':
+    optional: true
+
+  '@xcfx/node-linux-x64-gnu@0.4.0':
+    optional: true
+
+  '@xcfx/node-win32-x64-msvc@0.4.0':
+    optional: true
+
+  '@xcfx/node@0.4.0(typescript@5.7.2)':
+    dependencies:
+      cive: 0.8.0(typescript@5.7.2)
+    optionalDependencies:
+      '@xcfx/node-darwin-arm64': 0.4.0
+      '@xcfx/node-darwin-x64': 0.4.0
+      '@xcfx/node-linux-x64-gnu': 0.4.0
+      '@xcfx/node-win32-x64-msvc': 0.4.0
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+
   abbrev@1.0.9: {}
 
   abitype@0.0.0-canary-20240628164201(typescript@5.7.2)(zod@3.24.1):
@@ -3766,6 +3828,19 @@ snapshots:
       - typescript
       - utf-8-validate
       - zod
+
+  cive@0.8.0(typescript@5.7.2):
+    dependencies:
+      '@noble/curves': 1.7.0
+      '@noble/hashes': 1.6.1
+      '@scure/bip32': 1.6.0
+      '@scure/bip39': 1.5.0
+      viem: 2.21.55(typescript@5.7.2)(zod@3.24.1)
+      zod: 3.24.1
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
 
   cive@0.8.1(typescript@5.7.2):
     dependencies:
