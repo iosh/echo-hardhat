@@ -13,19 +13,22 @@ describe('default', () => {
   test('default', async () => {
     const hre = await import('hardhat')
 
-    hre.tasks[TASK_CONFLUX_NODE_SERVER_READY].setAction(async () => {
-      const result = await fetch(
-        `http://127.0.0.1:${config.jsonrpcLocalHttpPort}`,
-        {
-          headers: {
-            'content-type': 'application/json',
+    hre.tasks[TASK_CONFLUX_NODE_SERVER_READY].setAction(
+      async ({ nodeConfig, confluxServer }) => {
+        const result = await fetch(
+          `http://127.0.0.1:${nodeConfig.jsonrpcLocalHttpPort}`,
+          {
+            headers: {
+              'content-type': 'application/json',
+            },
+            body: '{"id":1,"jsonrpc":"2.0","params":["earliest"],"method":"cfx_epochNumber"}',
+            method: 'POST',
           },
-          body: '{"id":1,"jsonrpc":"2.0","params":["earliest"],"method":"cfx_epochNumber"}',
-          method: 'POST',
-        },
-      ).then((res) => res.json() as Promise<{ result: string }>)
-      expect(result.result).toMatchInlineSnapshot()
-    })
+        ).then((res) => res.json() as Promise<{ result: string }>)
+        expect(result.result).toMatchInlineSnapshot(`"0x0"`)
+        await confluxServer.stop()
+      },
+    )
 
     await hre.run(TASK_CONFLUX_NODE)
   })

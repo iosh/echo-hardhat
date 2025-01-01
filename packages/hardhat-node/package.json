@@ -1,7 +1,6 @@
 {
   "name": "@civex/hardhat-node",
-  "version": "0.0.1",
-  "private": true,
+  "version": "0.0.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "typings": "./dist/index.d.ts",
@@ -10,6 +9,7 @@
     "build": "tsc --project ./tsconfig.build.json",
     "test": "vitest --config ./vitest.config.ts dev"
   },
+  "files": ["dist"],
   "keywords": [],
   "author": "",
   "license": "MIT",

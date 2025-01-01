@@ -3,11 +3,11 @@ import 'hardhat/types/runtime'
 import type { Config } from '@xcfx/node'
 
 declare module 'hardhat/types/config' {
-  interface NetworksConfig {
+  interface HardhatUserConfig {
     conflux?: Config
   }
 
-  interface NetworksUserConfig {
+  interface HardhatConfig {
     conflux?: Config
   }
 }
