@@ -70,6 +70,10 @@ importers:
       '@xcfx/node':
         specifier: ^0.4.0
         version: 0.4.0(typescript@5.7.2)
+    devDependencies:
+      hardhat:
+        specifier: ^2.22.17
+        version: 2.22.17(typescript@5.7.2)
 
   packages/hardhat-toolbox-cive:
     dependencies:
