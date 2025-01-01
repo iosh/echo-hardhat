@@ -7,12 +7,19 @@
   "typings": "./dist/index.d.ts",
   "scripts": {
     "clean": "rm -rf ./dist",
-    "build": "tsc --project ./tsconfig.build.json"
+    "build": "tsc --project ./tsconfig.build.json",
+    "test": "vitest --config ./vitest.config.ts dev"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "dependencies": {
     "@xcfx/node": "^0.4.0"
+  },
+  "devDependencies": {
+    "hardhat": "^2.22.17"
+  },
+  "peerDependencies": {
+    "hardhat": "^2.22.17"
   }
 }
