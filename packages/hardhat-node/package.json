@@ -4,6 +4,7 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "typings": "./dist/index.d.ts",
+  "private": true,
   "scripts": {
     "clean": "rm -rf ./dist",
     "build": "tsc --project ./tsconfig.build.json",
