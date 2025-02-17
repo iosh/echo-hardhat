@@ -44,8 +44,8 @@
   },
   "author": "",
   "license": "MIT",
-  "repository": "iosh/hardhat",
-  "homepage": "https://github.com/iosh/hardhat",
+  "repository": "iosh/echo-hardhat",
+  "homepage": "https://github.com/iosh/echo-hardhat",
   "devDependencies": {
     "@types/lodash.memoize": "^4.1.9",
     "cive": "^0.8.1",
