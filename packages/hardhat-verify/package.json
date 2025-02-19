@@ -1,0 +1,36 @@
+{
+  "name": "@civex/hardhat-verify",
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "typings": "./dist/index.d.ts",
+  "private": true,
+  "scripts": {
+    "clean": "rm -rf ./dist",
+    "build": "tsc --project ./tsconfig.build.json",
+    "test": "vitest --config ./vitest.config.ts dev"
+  },
+  "files": ["dist"],
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/semver": "^7.5.8",
+    "@types/debug": "^4.1.4",
+    "hardhat": "^2.22.17"
+  },
+  "peerDependencies": {
+    "hardhat": "^2.22.17"
+  },
+  "dependencies": {
+    "@ethersproject/abi": "^5.7.0",
+    "@nomicfoundation/hardhat-verify": "^2.0.12",
+    "cive": "^0.8.1",
+    "lodash.clonedeep": "^4.5.0",
+    "semver": "^7.7.1",
+    "table": "^6.9.0",
+    "undici": "^5.14.0",
+    "cbor": "^8.1.0",
+    "debug": "^4.1.1"
+  }
+}
