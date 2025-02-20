@@ -6,8 +6,8 @@
   "typings": "./dist/index.d.ts",
   "private": true,
   "scripts": {
-    "clean": "rm -rf ./dist",
-    "build": "tsc --project ./tsconfig.build.json",
+    "clean": "rm -rf ./dist && rm -rf *.tsbuildinfo",
+    "build": "pnpm clean &&tsc --project ./tsconfig.build.json",
     "test": "vitest --config ./vitest.config.ts dev"
   },
   "files": ["dist"],

@@ -11,7 +11,7 @@ export const TASK_VERIFY_GET_CONTRACT_INFORMATION =
 export const TASK_VERIFY_CONFLUXSCAN = 'verify:confluxscan'
 export const TASK_VERIFY_CONFLUXSCAN_RESOLVE_ARGUMENTS =
   'verify:confluxscan-resolve-arguments'
-export const TASK_VERIFY_CONFLUXSCAN_GET_MINIMAL_INPUT =
-  'verify:confluxscan-get-minimal-input'
-export const TASK_VERIFY_CONFLUXSCAN_ATTEMPT_VERIFICATION =
-  'verify:confluxscan-attempt-verification'
+export const TASK_VERIFY_ETHERSCAN_GET_MINIMAL_INPUT =
+  'verify:etherscan-get-minimal-input'
+export const TASK_VERIFY_ETHERSCAN_ATTEMPT_VERIFICATION =
+  'verify:etherscan-attempt-verification'

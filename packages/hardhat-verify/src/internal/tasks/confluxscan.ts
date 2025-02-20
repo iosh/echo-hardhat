@@ -4,32 +4,41 @@ import type {
 } from '@nomicfoundation/hardhat-verify'
 import { subtask, types } from 'hardhat/config'
 import type { CompilerInput } from 'hardhat/types'
-import { Confluxscan } from '../internal/confluxscan'
+import { isFullyQualifiedName } from 'hardhat/utils/contract-names'
+import { Confluxscan } from '../confluxscan'
 import {
   CompilerVersionsMismatchError,
   ContractVerificationFailedError,
+  InvalidAddressError,
+  InvalidContractNameError,
+  MissingAddressError,
   NetworkRequestError,
-} from '../internal/errors'
+} from '../errors'
 import type {
   ExtendedContractInformation,
   LibraryToAddress,
-} from '../internal/solc/artifacts'
-import { Bytecode } from '../internal/solc/bytecode'
+} from '../solc/artifacts'
+import { Bytecode } from '../solc/bytecode'
 import {
   TASK_VERIFY_CONFLUXSCAN,
-  TASK_VERIFY_CONFLUXSCAN_ATTEMPT_VERIFICATION,
-  TASK_VERIFY_CONFLUXSCAN_GET_MINIMAL_INPUT,
   TASK_VERIFY_CONFLUXSCAN_RESOLVE_ARGUMENTS,
+  TASK_VERIFY_ETHERSCAN_ATTEMPT_VERIFICATION,
+  TASK_VERIFY_ETHERSCAN_GET_MINIMAL_INPUT,
   TASK_VERIFY_GET_CONTRACT_INFORMATION,
-} from '../internal/task-names'
-import { encodeArguments, getCompilerVersions } from '../internal/utilities'
+} from '../task-names'
+import {
+  encodeArguments,
+  getCompilerVersions,
+  resolveConstructorArguments,
+  resolveLibraries,
+} from '../utilities'
 
 // parsed verification args
 interface VerificationArgs {
   address: string
   constructorArgs: string[]
   libraries: LibraryToAddress
-  contractFQN?: string
+  contractFQN?: string | undefined
   force: boolean
 }
 
@@ -57,7 +66,6 @@ subtask(TASK_VERIFY_CONFLUXSCAN)
       TASK_VERIFY_CONFLUXSCAN_RESOLVE_ARGUMENTS,
       taskArgs,
     )
-
     const chainConfig = await Confluxscan.getCurrentChainConfig(
       network.name,
       network.provider,
@@ -78,6 +86,7 @@ subtask(TASK_VERIFY_CONFLUXSCAN)
       }
       // https://github.com/blockscout/blockscout/issues/9001
     }
+
     if (!force && isVerified) {
       const contractURL = etherscan.getContractUrl(address)
       console.warn(`The contract ${address} has already been verified on the block explorer. If you're trying to verify a partially verified contract, please use the --force flag.
@@ -117,7 +126,7 @@ ${contractURL}
     )
 
     const minimalInput: CompilerInput = await run(
-      TASK_VERIFY_CONFLUXSCAN_GET_MINIMAL_INPUT,
+      TASK_VERIFY_ETHERSCAN_GET_MINIMAL_INPUT,
       {
         sourceName: contractInformation.sourceName,
       },
@@ -132,7 +141,7 @@ ${contractURL}
 
     // First, try to verify the contract using the minimal input
     const { success: minimalInputVerificationSuccess }: VerificationResponse =
-      await run(TASK_VERIFY_CONFLUXSCAN_ATTEMPT_VERIFICATION, {
+      await run(TASK_VERIFY_ETHERSCAN_ATTEMPT_VERIFICATION, {
         address,
         compilerInput: minimalInput,
         contractInformation,
@@ -150,11 +159,12 @@ This means that unrelated contracts may be displayed on Etherscan...
 `)
 
     // If verifying with the minimal input failed, try again with the full compiler input
+
     const {
       success: fullCompilerInputVerificationSuccess,
       message: verificationMessage,
     }: VerificationResponse = await run(
-      TASK_VERIFY_CONFLUXSCAN_ATTEMPT_VERIFICATION,
+      TASK_VERIFY_ETHERSCAN_ATTEMPT_VERIFICATION,
       {
         address,
         compilerInput: contractInformation.compilerInput,
@@ -173,3 +183,54 @@ This means that unrelated contracts may be displayed on Etherscan...
       contractInformation.undetectableLibraries,
     )
   })
+
+subtask(TASK_VERIFY_CONFLUXSCAN_RESOLVE_ARGUMENTS)
+  .addOptionalParam('address')
+  .addOptionalParam('constructorArgsParams', undefined, [], types.any)
+  .addOptionalParam('constructorArgs', undefined, undefined, types.inputFile)
+  .addOptionalParam('libraries', undefined, undefined, types.any)
+  .addOptionalParam('contract')
+  .addFlag('force')
+  .setAction(
+    async ({
+      address,
+      constructorArgsParams,
+      constructorArgs: constructorArgsModule,
+      contract,
+      libraries: librariesModule,
+      force,
+    }: VerifyTaskArgs): Promise<VerificationArgs> => {
+      if (address === undefined) {
+        throw new MissingAddressError()
+      }
+
+      const { isAddress } = await import('cive/utils')
+      if (!isAddress(address)) {
+        throw new InvalidAddressError(address)
+      }
+
+      if (contract !== undefined && !isFullyQualifiedName(contract)) {
+        throw new InvalidContractNameError(contract)
+      }
+
+      const constructorArgs = await resolveConstructorArguments(
+        constructorArgsParams,
+        constructorArgsModule,
+      )
+
+      let libraries: any
+      if (typeof librariesModule === 'object') {
+        libraries = librariesModule
+      } else {
+        libraries = await resolveLibraries(librariesModule)
+      }
+
+      return {
+        address,
+        constructorArgs,
+        libraries,
+        contractFQN: contract,
+        force,
+      }
+    },
+  )

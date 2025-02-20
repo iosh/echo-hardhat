@@ -63,9 +63,9 @@ export class Bytecode {
     provider: EthereumProvider,
     network: string,
   ): Promise<Bytecode> {
-    const response: string = await provider.send('eth_getCode', [
+    const response: string = await provider.send('cfx_getCode', [
       address,
-      'latest',
+      'latest_state',
     ])
     const deployedBytecode = response.replace(/^0x/, '')
 

@@ -50,10 +50,9 @@ export class Confluxscan {
     ethereumProvider: EthereumProvider,
     customChains: ChainConfig[],
   ): Promise<ChainConfig> {
-    const currentChainId = Number.parseInt(
-      await ethereumProvider.send('eth_chainId'),
-      16,
-    )
+    const nodeStatus = await ethereumProvider.send('cfx_getStatus')
+
+    const currentChainId = Number.parseInt(nodeStatus.chainId, 16)
 
     const currentChainConfig = [
       // custom chains has higher precedence than builtin chains
@@ -68,7 +67,6 @@ export class Confluxscan {
 
       throw new ChainConfigNotFoundError(currentChainId)
     }
-
     return currentChainConfig
   }
 
@@ -100,6 +98,7 @@ export class Confluxscan {
     })
 
     const url = new URL(this.apiUrl)
+    url.pathname = 'contract/getsourcecode'
     url.search = parameters.toString()
 
     let response: Dispatcher.ResponseData | undefined
@@ -219,6 +218,7 @@ export class Confluxscan {
       guid,
     })
     const url = new URL(this.apiUrl)
+    url.pathname = 'contract/verifysourcecode'
     url.search = parameters.toString()
 
     let response: Dispatcher.ResponseData | undefined

@@ -3,6 +3,8 @@ import '@nomicfoundation/hardhat-verify'
 import type { VerificationSubtask } from '@nomicfoundation/hardhat-verify'
 import { confluxscanConfigExtender } from './internal/config'
 import { TASK_VERIFY_CONFLUXSCAN } from './internal/task-names'
+import './internal/type-extensions'
+import './internal/tasks/confluxscan'
 
 export const TASK_VERIFY_GET_VERIFICATION_SUBTASKS =
   'verify:get-verification-subtasks'

@@ -1,3 +1,4 @@
+import 'hardhat/types/config'
 import type { ConfluxscanConfig } from '../types'
 
 declare module 'hardhat/types/config' {
