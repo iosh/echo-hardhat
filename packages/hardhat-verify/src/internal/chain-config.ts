@@ -13,7 +13,7 @@ export const builtinChains: ChainConfig[] = [
     network: 'testnet',
     chainId: 1,
     urls: {
-      apiURL: 'https://testnet.confluxscan.io',
+      apiURL: 'https://api-testnet.confluxscan.io',
       browserURL: 'https://testnet.confluxscan.io',
     },
   },
