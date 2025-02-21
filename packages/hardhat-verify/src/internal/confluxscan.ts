@@ -1,9 +1,9 @@
-import type { EthereumProvider } from 'hardhat/types'
+import type { Network } from 'hardhat/types'
 import type { Dispatcher } from 'undici/types'
-import type { ApiKey, ChainConfig } from '../types'
+import type { ChainConfig } from '../types'
 import type {
+  ConfluxscanVerifyResponse,
   EtherscanGetSourceCodeResponse,
-  EtherscanVerifyResponse,
 } from './etherscan.types'
 
 import { HARDHAT_NETWORK_NAME } from 'hardhat/plugins'
@@ -11,14 +11,13 @@ import { HARDHAT_NETWORK_NAME } from 'hardhat/plugins'
 import { builtinChains } from './chain-config'
 import {
   ChainConfigNotFoundError,
+  CivexHardhatVerifyError,
   ContractAlreadyVerifiedError,
   ContractStatusPollingInvalidStatusCodeError,
   ContractStatusPollingResponseNotOkError,
   ContractVerificationInvalidStatusCodeError,
   ContractVerificationMissingBytecodeError,
   HardhatNetworkNotSupportedError,
-  HardhatVerifyError,
-  MissingApiKeyError,
   NetworkRequestError,
 } from './errors'
 import { isSuccessStatusCode, sendGetRequest, sendPostRequest } from './undici'
@@ -40,19 +39,27 @@ export class Confluxscan {
    * @param browserUrl - The Etherscan browser URL, e.g. https://etherscan.io.
    */
   constructor(
-    public apiKey: string,
+    // public apiKey: string,
     public apiUrl: string,
     public browserUrl: string,
   ) {}
 
   public static async getCurrentChainConfig(
-    networkName: string,
-    ethereumProvider: EthereumProvider,
+    network: Network,
     customChains: ChainConfig[],
   ): Promise<ChainConfig> {
-    const nodeStatus = await ethereumProvider.send('cfx_getStatus')
+    const cive = await import('cive')
 
-    const currentChainId = Number.parseInt(nodeStatus.chainId, 16)
+    if (!('url' in network.config)) {
+      throw new Error('Invalid network configuration')
+    }
+
+    const client = cive.createPublicClient({
+      transport: cive.http(network.config.url),
+    })
+
+    const nodeStatus = await client.getStatus()
+    const currentChainId = nodeStatus.chainId
 
     const currentChainConfig = [
       // custom chains has higher precedence than builtin chains
@@ -61,7 +68,7 @@ export class Confluxscan {
     ].find(({ chainId }) => chainId === currentChainId)
 
     if (currentChainConfig === undefined) {
-      if (networkName === HARDHAT_NETWORK_NAME) {
+      if (network.name === HARDHAT_NETWORK_NAME) {
         throw new HardhatNetworkNotSupportedError()
       }
 
@@ -70,15 +77,11 @@ export class Confluxscan {
     return currentChainConfig
   }
 
-  public static fromChainConfig(
-    apiKey: ApiKey | undefined,
-    chainConfig: ChainConfig,
-  ) {
-    const resolvedApiKey = resolveApiKey(apiKey, chainConfig.network)
+  public static fromChainConfig(chainConfig: ChainConfig) {
     const apiUrl = chainConfig.urls.apiURL
     const browserUrl = chainConfig.urls.browserURL.trim().replace(/\/$/, '')
 
-    return new Confluxscan(resolvedApiKey, apiUrl, browserUrl)
+    return new Confluxscan(apiUrl, browserUrl)
   }
 
   /**
@@ -91,14 +94,14 @@ export class Confluxscan {
    */
   public async isVerified(address: string) {
     const parameters = new URLSearchParams({
-      apikey: this.apiKey,
-      module: 'contract',
-      action: 'getsourcecode',
+      // apikey: this.apiKey,
+      // module: "contract",
+      // action: "getsourcecode",
       address,
     })
 
     const url = new URL(this.apiUrl)
-    url.pathname = 'contract/getsourcecode'
+    url.pathname = 'contract/getabi'
     url.search = parameters.toString()
 
     let response: Dispatcher.ResponseData | undefined
@@ -122,7 +125,7 @@ export class Confluxscan {
       return false
     }
 
-    const sourceCode = json.result[0]?.SourceCode
+    const sourceCode = json.result
     return sourceCode !== undefined && sourceCode !== null && sourceCode !== ''
   }
 
@@ -139,7 +142,7 @@ export class Confluxscan {
    * @throws {ContractVerificationInvalidStatusCodeError} if the API returns an invalid status code.
    * @throws {ContractVerificationMissingBytecodeError} if the bytecode is not found on the block explorer.
    * @throws {ContractAlreadyVerifiedError} if the contract is already verified.
-   * @throws {HardhatVerifyError} if the response status is not OK.
+   * @throws {CivexHardhatVerifyError} if the response status is not OK.
    */
   public async verify(
     contractAddress: string,
@@ -147,9 +150,9 @@ export class Confluxscan {
     contractName: string,
     compilerVersion: string,
     constructorArguments: string,
-  ): Promise<EtherscanResponse> {
+  ): Promise<ConfluxscanResponse> {
     const parameters = new URLSearchParams({
-      apikey: this.apiKey,
+      // apikey: this.apiKey,
       module: 'contract',
       action: 'verifysourcecode',
       contractaddress: contractAddress,
@@ -161,13 +164,14 @@ export class Confluxscan {
     })
 
     const url = new URL(this.apiUrl)
+    url.pathname = 'contract/verifysourcecode'
     let response: Dispatcher.ResponseData | undefined
-    let json: EtherscanVerifyResponse | undefined
+    let json: ConfluxscanVerifyResponse | undefined
     try {
       response = await sendPostRequest(url, parameters.toString(), {
         'Content-Type': 'application/x-www-form-urlencoded',
       })
-      json = (await response.body.json()) as EtherscanVerifyResponse
+      json = (await response.body.json()) as ConfluxscanVerifyResponse
     } catch (e: any) {
       throw new NetworkRequestError(e)
     }
@@ -180,7 +184,7 @@ export class Confluxscan {
       )
     }
 
-    const etherscanResponse = new EtherscanResponse(json)
+    const etherscanResponse = new ConfluxscanResponse(json)
 
     if (etherscanResponse.isBytecodeMissingInNetworkError()) {
       throw new ContractVerificationMissingBytecodeError(
@@ -194,7 +198,7 @@ export class Confluxscan {
     }
 
     if (!etherscanResponse.isOk()) {
-      throw new HardhatVerifyError(etherscanResponse.message)
+      throw new CivexHardhatVerifyError(etherscanResponse.message)
     }
 
     return etherscanResponse
@@ -210,22 +214,24 @@ export class Confluxscan {
    * @throws {ContractStatusPollingInvalidStatusCodeError} if the API returns an invalid status code.
    * @throws {ContractStatusPollingResponseNotOkError} if the response status is not OK.
    */
-  public async getVerificationStatus(guid: string): Promise<EtherscanResponse> {
+  public async getVerificationStatus(
+    guid: string,
+  ): Promise<ConfluxscanResponse> {
     const parameters = new URLSearchParams({
-      apikey: this.apiKey,
+      // apikey: this.apiKey,
       module: 'contract',
       action: 'checkverifystatus',
       guid,
     })
     const url = new URL(this.apiUrl)
-    url.pathname = 'contract/verifysourcecode'
+    url.pathname = '/contract/checkverifystatus'
     url.search = parameters.toString()
 
     let response: Dispatcher.ResponseData | undefined
-    let json: EtherscanVerifyResponse | undefined
+    let json: ConfluxscanVerifyResponse | undefined
     try {
       response = await sendGetRequest(url)
-      json = (await response.body.json()) as EtherscanVerifyResponse
+      json = (await response.body.json()) as ConfluxscanVerifyResponse
     } catch (e: any) {
       throw new NetworkRequestError(e)
     }
@@ -237,7 +243,7 @@ export class Confluxscan {
       )
     }
 
-    const etherscanResponse = new EtherscanResponse(json)
+    const etherscanResponse = new ConfluxscanResponse(json)
 
     if (etherscanResponse.isPending()) {
       await sleep(VERIFICATION_STATUS_POLLING_TIME)
@@ -271,13 +277,17 @@ export class Confluxscan {
   }
 }
 
-class EtherscanResponse implements ValidationResponse {
-  public readonly status: number
+class ConfluxscanResponse implements ValidationResponse {
+  public readonly code: number
   public readonly message: string
 
-  constructor(response: EtherscanVerifyResponse) {
-    this.status = Number.parseInt(response.status, 10)
-    this.message = response.result
+  constructor(response: ConfluxscanVerifyResponse) {
+    this.code = response.code
+    if (response.code === 0) {
+      this.message = response.message
+    } else {
+      this.message = response.data
+    }
   }
 
   public isPending() {
@@ -307,24 +317,24 @@ class EtherscanResponse implements ValidationResponse {
   }
 
   public isOk() {
-    return this.status === 1
+    return this.code === 0
   }
 }
 
-function resolveApiKey(apiKey: ApiKey | undefined, network: string) {
-  if (apiKey === undefined || apiKey === '') {
-    throw new MissingApiKeyError(network)
-  }
+// function resolveApiKey(apiKey: ApiKey | undefined, network: string) {
+//   if (apiKey === undefined || apiKey === "") {
+//     throw new MissingApiKeyError(network);
+//   }
 
-  if (typeof apiKey === 'string') {
-    return apiKey
-  }
+//   if (typeof apiKey === "string") {
+//     return apiKey;
+//   }
 
-  const key = apiKey[network]
+//   const key = apiKey[network];
 
-  if (key === undefined || key === '') {
-    throw new MissingApiKeyError(network)
-  }
+//   if (key === undefined || key === "") {
+//     throw new MissingApiKeyError(network);
+//   }
 
-  return key
-}
+//   return key;
+// }
