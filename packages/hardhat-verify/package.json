@@ -15,8 +15,9 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@types/semver": "^7.5.8",
+    "@civex/hardhat-cive": "^0.0.2",
     "@types/debug": "^4.1.4",
+    "@types/semver": "^7.5.8",
     "hardhat": "^2.22.17"
   },
   "peerDependencies": {
@@ -25,12 +26,12 @@
   "dependencies": {
     "@ethersproject/abi": "^5.7.0",
     "@nomicfoundation/hardhat-verify": "^2.0.12",
+    "cbor": "^8.1.0",
     "cive": "^0.8.1",
+    "debug": "^4.1.1",
     "lodash.clonedeep": "^4.5.0",
     "semver": "^7.7.1",
     "table": "^6.9.0",
-    "undici": "^5.14.0",
-    "cbor": "^8.1.0",
-    "debug": "^4.1.1"
+    "undici": "^5.14.0"
   }
 }

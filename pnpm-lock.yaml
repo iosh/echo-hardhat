@@ -139,6 +139,9 @@ importers:
         specifier: ^5.14.0
         version: 5.28.4
     devDependencies:
+      '@civex/hardhat-cive':
+        specifier: ^0.0.2
+        version: 0.0.2(cive@0.8.1(typescript@5.7.2))(hardhat@2.22.17(typescript@5.7.2))
       '@types/debug':
         specifier: ^4.1.4
         version: 4.1.12
@@ -271,6 +274,12 @@ packages:
 
   '@changesets/write@0.3.2':
     resolution: {integrity: sha512-kDxDrPNpUgsjDbWBvUo27PzKX4gqeKOlhibaOXDJA6kuBisGqNHv/HwGJrAu8U/dSf8ZEFIeHIPtvSlZI1kULw==}
+
+  '@civex/hardhat-cive@0.0.2':
+    resolution: {integrity: sha512-AMKBWBQOCwspzQUAAlb7PZSNk4++gU+LbQw+J10lYFSb2L68AAKR6viX/rBvQnso1lcUnocb4+RVmOMC//STOQ==}
+    peerDependencies:
+      cive: ^0.8.1
+      hardhat: ^2.22.17
 
   '@colors/colors@1.5.0':
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
@@ -2945,6 +2954,12 @@ snapshots:
       fs-extra: 7.0.1
       human-id: 1.0.2
       prettier: 2.8.8
+
+  '@civex/hardhat-cive@0.0.2(cive@0.8.1(typescript@5.7.2))(hardhat@2.22.17(typescript@5.7.2))':
+    dependencies:
+      cive: 0.8.1(typescript@5.7.2)
+      hardhat: 2.22.17(typescript@5.7.2)
+      lodash.memoize: 4.1.2
 
   '@colors/colors@1.5.0':
     optional: true
