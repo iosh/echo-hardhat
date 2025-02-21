@@ -1,47 +1,47 @@
 interface EtherscanGetSourceCodeNotOkResponse {
-  status: '0'
+  status: 1
   message: 'NOTOK'
   result: string
 }
 
 interface EtherscanGetSourceCodeOkResponse {
-  status: '1'
+  status: 0
   message: 'OK'
-  result: EtherscanContract[]
+  result: string
 }
 
-interface EtherscanContract {
-  SourceCode: string
-  ABI: string
-  ContractName: string
-  CompilerVersion: string
-  OptimizationUsed: string
-  Runs: string
-  ConstructorArguments: string
-  EVMVersion: string
-  Library: string
-  LicenseType: string
-  Proxy: string
-  Implementation: string
-  SwarmSource: string
-}
+//  interface EtherscanContract {
+//   SourceCode: string
+//   ABI: string
+//   ContractName: string
+//   CompilerVersion: string
+//   OptimizationUsed: string
+//   Runs: string
+//   ConstructorArguments: string
+//   EVMVersion: string
+//   Library: string
+//   LicenseType: string
+//   Proxy: string
+//   Implementation: string
+//   SwarmSource: string
+// }
 
 export type EtherscanGetSourceCodeResponse =
   | EtherscanGetSourceCodeNotOkResponse
   | EtherscanGetSourceCodeOkResponse
 
 interface EtherscanVerifyNotOkResponse {
-  status: '0'
-  message: 'NOTOK'
-  result: string
+  code: 1
+  message: string
+  data: string
 }
 
 interface EtherscanVerifyOkResponse {
-  status: '1'
+  code: 0
   message: 'OK'
   result: string
 }
 
-export type EtherscanVerifyResponse =
+export type ConfluxscanVerifyResponse =
   | EtherscanVerifyNotOkResponse
   | EtherscanVerifyOkResponse

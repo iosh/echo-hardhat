@@ -6,9 +6,9 @@ import {
   ABIArgumentLengthError,
   ABIArgumentOverflowError,
   ABIArgumentTypeError,
+  type CivexHardhatVerifyError,
   EtherscanVersionNotSupportedError,
   ExclusiveConstructorArgumentsError,
-  type HardhatVerifyError,
   ImportingModuleError,
   InvalidConstructorArgumentsModuleError,
   InvalidLibrariesModuleError,
@@ -57,7 +57,7 @@ export async function sleep(ms: number): Promise<void> {
  * // ... (more errors if present)
  */
 export function printVerificationErrors(
-  errors: Record<string, HardhatVerifyError>,
+  errors: Record<string, CivexHardhatVerifyError>,
 ) {
   let errorMessage =
     'hardhat-verify found one or more errors during the verification process:\n\n'

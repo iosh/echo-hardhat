@@ -8,11 +8,13 @@ import { isFullyQualifiedName } from 'hardhat/utils/contract-names'
 import { Confluxscan } from '../confluxscan'
 import {
   CompilerVersionsMismatchError,
+  ContractAlreadyVerifiedError,
   ContractVerificationFailedError,
   InvalidAddressError,
   InvalidContractNameError,
   MissingAddressError,
   NetworkRequestError,
+  VerificationAPIUnexpectedMessageError,
 } from '../errors'
 import type {
   ExtendedContractInformation,
@@ -21,8 +23,8 @@ import type {
 import { Bytecode } from '../solc/bytecode'
 import {
   TASK_VERIFY_CONFLUXSCAN,
+  TASK_VERIFY_CONFLUXSCAN_ATTEMPT_VERIFICATION,
   TASK_VERIFY_CONFLUXSCAN_RESOLVE_ARGUMENTS,
-  TASK_VERIFY_ETHERSCAN_ATTEMPT_VERIFICATION,
   TASK_VERIFY_ETHERSCAN_GET_MINIMAL_INPUT,
   TASK_VERIFY_GET_CONTRACT_INFORMATION,
 } from '../task-names'
@@ -31,6 +33,7 @@ import {
   getCompilerVersions,
   resolveConstructorArguments,
   resolveLibraries,
+  sleep,
 } from '../utilities'
 
 // parsed verification args
@@ -67,15 +70,11 @@ subtask(TASK_VERIFY_CONFLUXSCAN)
       taskArgs,
     )
     const chainConfig = await Confluxscan.getCurrentChainConfig(
-      network.name,
-      network.provider,
+      network,
       config.etherscan.customChains,
     )
 
-    const etherscan = Confluxscan.fromChainConfig(
-      config.etherscan.apiKey,
-      chainConfig,
-    )
+    const etherscan = Confluxscan.fromChainConfig(chainConfig)
 
     let isVerified = false
     try {
@@ -141,7 +140,7 @@ ${contractURL}
 
     // First, try to verify the contract using the minimal input
     const { success: minimalInputVerificationSuccess }: VerificationResponse =
-      await run(TASK_VERIFY_ETHERSCAN_ATTEMPT_VERIFICATION, {
+      await run(TASK_VERIFY_CONFLUXSCAN_ATTEMPT_VERIFICATION, {
         address,
         compilerInput: minimalInput,
         contractInformation,
@@ -164,7 +163,7 @@ This means that unrelated contracts may be displayed on Etherscan...
       success: fullCompilerInputVerificationSuccess,
       message: verificationMessage,
     }: VerificationResponse = await run(
-      TASK_VERIFY_ETHERSCAN_ATTEMPT_VERIFICATION,
+      TASK_VERIFY_CONFLUXSCAN_ATTEMPT_VERIFICATION,
       {
         address,
         compilerInput: contractInformation.compilerInput,
@@ -231,6 +230,77 @@ subtask(TASK_VERIFY_CONFLUXSCAN_RESOLVE_ARGUMENTS)
         libraries,
         contractFQN: contract,
         force,
+      }
+    },
+  )
+
+interface AttemptVerificationArgs {
+  address: string
+  compilerInput: CompilerInput
+  contractInformation: ExtendedContractInformation
+  verificationInterface: Confluxscan
+  encodedConstructorArguments: string
+}
+subtask(TASK_VERIFY_CONFLUXSCAN_ATTEMPT_VERIFICATION)
+  .addParam('address')
+  .addParam('compilerInput', undefined, undefined, types.any)
+  .addParam('contractInformation', undefined, undefined, types.any)
+  .addParam('verificationInterface', undefined, undefined, types.any)
+  .addParam('encodedConstructorArguments')
+  .setAction(
+    async ({
+      address,
+      compilerInput,
+      contractInformation,
+      verificationInterface,
+      encodedConstructorArguments,
+    }: AttemptVerificationArgs): Promise<VerificationResponse> => {
+      // Ensure the linking information is present in the compiler input;
+      compilerInput.settings.libraries = contractInformation.libraries
+
+      const contractFQN = `${contractInformation.sourceName}:${contractInformation.contractName}`
+      const { message: guid } = await verificationInterface.verify(
+        address,
+        JSON.stringify(compilerInput),
+        contractFQN,
+        `v${contractInformation.solcLongVersion}`,
+        encodedConstructorArguments,
+      )
+
+      // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+      console.log(`Successfully submitted source code for contract
+${contractFQN} at ${address}
+for verification on the block explorer. Waiting for verification result...
+`)
+
+      // Compilation is bound to take some time so there's no sense in requesting status immediately.
+      await sleep(700)
+      const verificationStatus =
+        await verificationInterface.getVerificationStatus(guid)
+
+      // Etherscan answers with already verified message only when checking returned guid
+      if (verificationStatus.isAlreadyVerified()) {
+        throw new ContractAlreadyVerifiedError(contractFQN, address)
+      }
+
+      if (!(verificationStatus.isFailure() || verificationStatus.isSuccess())) {
+        // Reaching this point shouldn't be possible unless the API is behaving in a new way.
+        throw new VerificationAPIUnexpectedMessageError(
+          verificationStatus.message,
+        )
+      }
+
+      if (verificationStatus.isSuccess()) {
+        const contractURL = verificationInterface.getContractUrl(address)
+        // biome-ignore lint/suspicious/noConsoleLog: <explanation>
+        console.log(`Successfully verified contract ${contractInformation.contractName} on the block explorer.
+${contractURL}
+`)
+      }
+
+      return {
+        success: verificationStatus.isSuccess(),
+        message: verificationStatus.message,
       }
     },
   )
