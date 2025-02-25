@@ -1,10 +1,9 @@
 {
   "name": "@civex/hardhat-verify",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "typings": "./dist/index.d.ts",
-  "private": true,
   "scripts": {
     "clean": "rm -rf ./dist && rm -rf *.tsbuildinfo",
     "build": "pnpm clean &&tsc --project ./tsconfig.build.json",

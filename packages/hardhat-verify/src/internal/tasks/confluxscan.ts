@@ -259,7 +259,7 @@ subtask(TASK_VERIFY_CONFLUXSCAN_ATTEMPT_VERIFICATION)
       compilerInput.settings.libraries = contractInformation.libraries
 
       const contractFQN = `${contractInformation.sourceName}:${contractInformation.contractName}`
-      const { message: guid } = await verificationInterface.verify(
+      const { data: guid } = await verificationInterface.verify(
         address,
         JSON.stringify(compilerInput),
         contractFQN,

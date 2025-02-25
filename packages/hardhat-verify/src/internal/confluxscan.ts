@@ -280,39 +280,35 @@ export class Confluxscan {
 class ConfluxscanResponse implements ValidationResponse {
   public readonly code: number
   public readonly message: string
+  public readonly data: string
 
   constructor(response: ConfluxscanVerifyResponse) {
     this.code = response.code
-    if (response.code === 0) {
-      this.message = response.message
-    } else {
-      this.message = response.data
-    }
+    this.data = response.data
+    this.message = response.message
   }
 
   public isPending() {
-    return this.message === 'Pending in queue'
+    return this.data === 'Pending in queue'
   }
 
   public isFailure() {
-    return this.message === 'Fail - Unable to verify'
+    return this.data === 'Fail - Unable to verify'
   }
 
   public isSuccess() {
-    return this.message === 'Pass - Verified'
+    return this.data === 'Pass - Verified'
   }
 
   public isBytecodeMissingInNetworkError() {
-    return this.message.startsWith('Unable to locate ContractCode at')
+    return this.data.startsWith('Unable to locate ContractCode at')
   }
 
   public isAlreadyVerified() {
     return (
-      // returned by blockscout
-      this.message.startsWith('Smart-contract already verified') ||
       // returned by etherscan
-      this.message.startsWith('Contract source code already verified') ||
-      this.message.startsWith('Already Verified')
+      this.data.startsWith('Contract source code already verified') ||
+      this.data.startsWith('Already Verified')
     )
   }
 

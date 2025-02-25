@@ -32,14 +32,14 @@ export type EtherscanGetSourceCodeResponse =
 
 interface EtherscanVerifyNotOkResponse {
   code: 1
-  message: string
+  message: 'NOTOK'
   data: string
 }
 
 interface EtherscanVerifyOkResponse {
   code: 0
   message: 'OK'
-  result: string
+  data: string
 }
 
 export type ConfluxscanVerifyResponse =
