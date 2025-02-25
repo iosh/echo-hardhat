@@ -98,8 +98,7 @@ ${contractURL}
 
     const deployedBytecode = await Bytecode.getDeployedContractBytecode(
       address,
-      network.provider,
-      network.name,
+      network,
     )
 
     const matchingCompilerVersions = await deployedBytecode.getMatchingVersions(

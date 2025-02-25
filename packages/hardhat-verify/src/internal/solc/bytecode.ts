@@ -1,4 +1,4 @@
-import type { CompilerOutputBytecode, EthereumProvider } from 'hardhat/types'
+import type { CompilerOutputBytecode, Network } from 'hardhat/types'
 
 import { DeployedBytecodeNotFoundError } from '../errors'
 import {
@@ -60,17 +60,31 @@ export class Bytecode {
 
   public static async getDeployedContractBytecode(
     address: string,
-    provider: EthereumProvider,
-    network: string,
+    network: Network,
   ): Promise<Bytecode> {
-    const response: string = await provider.send('cfx_getCode', [
+    if (!('url' in network.config)) {
+      throw new Error('Invalid network configuration')
+    }
+
+    const cive = await import('cive')
+
+    const client = cive.createPublicClient({
+      transport: cive.http(network.config.url),
+    })
+    const { isAddress } = await import('cive/utils')
+
+    if (!isAddress(address)) {
+      throw new Error('Invalid address')
+    }
+
+    const response = await client.getCode({
       address,
-      'latest_state',
-    ])
-    const deployedBytecode = response.replace(/^0x/, '')
+      epochTag: 'latest_state',
+    })
+    const deployedBytecode = (response || '').replace(/^0x/, '')
 
     if (deployedBytecode === '') {
-      throw new DeployedBytecodeNotFoundError(address, network)
+      throw new DeployedBytecodeNotFoundError(address, network.name)
     }
 
     return new Bytecode(deployedBytecode)
