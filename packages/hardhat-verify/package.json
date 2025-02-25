@@ -4,6 +4,10 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "typings": "./dist/index.d.ts",
+  "author": "",
+  "license": "MIT",
+  "repository": "iosh/echo-hardhat",
+  "homepage": "https://github.com/iosh/echo-hardhat",
   "scripts": {
     "clean": "rm -rf ./dist && rm -rf *.tsbuildinfo",
     "build": "pnpm clean &&tsc --project ./tsconfig.build.json",
@@ -11,8 +15,6 @@
   },
   "files": ["dist"],
   "keywords": [],
-  "author": "",
-  "license": "MIT",
   "devDependencies": {
     "@civex/hardhat-cive": "^0.0.2",
     "@types/debug": "^4.1.4",
